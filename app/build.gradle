@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -21,15 +20,44 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
 }
 
 dependencies {
+    def thirdPartyDependencies = rootProject.ext.thirdPartyDependencies
+    def googleDependencies = rootProject.ext.googleDependencies
+    def testDependencies = rootProject.ext.testDependencies
+
+    implementation googleDependencies.kotlin
+    implementation googleDependencies.appcompat
+    implementation googleDependencies.design
+    implementation googleDependencies.recyclerview
+    implementation googleDependencies.constraint_layout
+    implementation googleDependencies.lifecycle_extensions
+
+    implementation thirdPartyDependencies.dagger
+    kapt thirdPartyDependencies.daggerCompiler
+    implementation thirdPartyDependencies.rxjava
+    implementation thirdPartyDependencies.rxandroid
+    implementation thirdPartyDependencies.rxKotlin
+
+    implementation thirdPartyDependencies.retrofit
+    implementation thirdPartyDependencies.retrofit_rx
+    implementation thirdPartyDependencies.retrofit_gson
+    implementation thirdPartyDependencies.okhttp
+    implementation thirdPartyDependencies.okhttp_log_interc
+    implementation thirdPartyDependencies.glide
+    kapt thirdPartyDependencies.glide_compiler
+
+    testImplementation testDependencies.junit
+    androidTestImplementation testDependencies.espresso_core
+
+
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
