@@ -55,7 +55,7 @@ class RatesFragment : Fragment() {
 
     private fun showError(error: CurrencyError) {
         when (error) {
-            CurrencyError.HTTP_ERRORS -> showSnackBar(error) { viewModel.getRatesWithBase() }
+            CurrencyError.HTTP_ERRORS -> showSnackBar(error) { viewModel.tryConnect() }
             CurrencyError.UNKNOWN -> showSnackBar(error)
         }
 

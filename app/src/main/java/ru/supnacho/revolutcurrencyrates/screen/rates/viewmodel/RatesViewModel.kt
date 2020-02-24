@@ -2,15 +2,14 @@ package ru.supnacho.revolutcurrencyrates.screen.rates.viewmodel
 
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.supnacho.revolutcurrencyrates.R
 import ru.supnacho.revolutcurrencyrates.data.api.ApiBoundary
 import ru.supnacho.revolutcurrencyrates.data.api.LocalStorageBoundary
-import ru.supnacho.revolutcurrencyrates.domain.CurrencyCode
-import ru.supnacho.revolutcurrencyrates.domain.CurrencyError
-import ru.supnacho.revolutcurrencyrates.domain.CurrencyNames
-import ru.supnacho.revolutcurrencyrates.domain.Event
+import ru.supnacho.revolutcurrencyrates.domain.*
 import ru.supnacho.revolutcurrencyrates.screen.rates.adapter.RatesItemViewState
 import ru.supnacho.revolutcurrencyrates.utils.safeLog
 import ru.supnacho.revolutcurrencyrates.utils.subscribeAndTrack
@@ -21,9 +20,11 @@ import javax.inject.Inject
 
 class RatesViewModel @Inject constructor(
     private val api: ApiBoundary,
-    private val localStorage: LocalStorageBoundary
+    private val localStorage: LocalStorageBoundary,
+    private val uiMapper: RatesUiMapper
 ) : ViewModel() {
 
+    private var cachedRatesModel: RatesModel? = null //todo add to shared pref
     private val compositeDisposable = CompositeDisposable()
     private val _liveState = MutableLiveData<RatesViewState>()
     private val eventState = LiveEvent<Event>()
@@ -56,52 +57,48 @@ class RatesViewModel @Inject constructor(
         eventState.value = Event.BaseCurrencySelected
     }
 
-    fun getRatesWithBase() {
+    private fun getRatesWithBase() {
         compositeDisposable.clear()
         api.getRatesWithBase(_liveState.value?.baseCurrency?.code)
             .toObservable()
             .map {
+                cachedRatesModel = it
                 val previousState = _liveState.value
-                val preparedViewState = previousState?.copy(
-                    baseCurrency = it.baseCurrency,
-                    rates = it.rates.map { e ->
-                        RatesItemViewState(
-                            currencyCode = e.key,
-                            nameResId = CurrencyNames.names[e.key] ?: R.string.unknown,
-                            rateToBase = e.value,
-                            baseAmount = previousState.baseAmount.toBigDecimal(),
-                            isBaseCurrency = e.key.code == it.baseCurrency.code
-                        )
-                    }
-                )
-                (preparedViewState?.rates as? MutableList)?.add(
-                    0, RatesItemViewState(
-                        currencyCode = it.baseCurrency,
-                        nameResId = CurrencyNames.names[it.baseCurrency] ?: R.string.unknown,
-                        rateToBase = BigDecimal.ONE,
-                        isBaseCurrency = true,
-                        baseAmount = previousState.baseAmount.toBigDecimal()
-                    )
-                )
-                preparedViewState
+                uiMapper.mapRatesModelToUI(previousState, it)
             }
             .subscribeOn(Schedulers.io())
             .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
+            .doOnError { doOfflineConversion() }
             .subscribeAndTrack(
                 subscriptionsHolder = compositeDisposable,
-                onSuccess = {
-                    safeLog("RATES", "${it?.rates?.size}")
-                    _liveState.postValue(it)
-                },
-                onError = {
-                    val errorMessage = it.message ?: ""
-                    safeLog("RATES", errorMessage)
-                    val errorType =
-                        if (it is IOException) CurrencyError.HTTP_ERRORS else CurrencyError.UNKNOWN
-                    eventState.postValue(Event.Error(errorType))
-                }
+                onSuccess = { _liveState.postValue(it) },
+                onError = { handleError(it) }
             )
+    }
 
+    private fun doOfflineConversion() {
+        Observable.interval(1, TimeUnit.SECONDS)
+            .map { cachedRatesModel?.let { uiMapper.mapRatesModelToUI(_liveState.value, it) } }
+            .subscribeOn(Schedulers.io())
+            .subscribeAndTrack(
+                subscriptionsHolder = compositeDisposable,
+                onSuccess = { _liveState.postValue(it) },
+                onError = { handleError(it) }
+            )
+    }
+
+    fun tryConnect() {
+        getRatesWithBase()
+    }
+
+    private fun handleError(it: Throwable) {
+        val errorMessage = it.message ?: ""
+        safeLog("RATES", errorMessage)
+        val errorType = if (it is IOException) {
+            CurrencyError.HTTP_ERRORS
+        } else
+            CurrencyError.UNKNOWN
+        eventState.postValue(Event.Error(errorType))
     }
 
     fun onResume() {

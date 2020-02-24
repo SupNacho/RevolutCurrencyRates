@@ -10,6 +10,8 @@ import ru.supnacho.revolutcurrencyrates.data.api.*
 import ru.supnacho.revolutcurrencyrates.di.RatesDependencies
 import ru.supnacho.revolutcurrencyrates.domain.RatesDtoMapper
 import ru.supnacho.revolutcurrencyrates.domain.RatesDtoMapperImpl
+import ru.supnacho.revolutcurrencyrates.domain.RatesUiMapper
+import ru.supnacho.revolutcurrencyrates.domain.RatesUiMapperImpl
 import ru.supnacho.revolutcurrencyrates.screen.rates.viewmodel.RatesViewModel
 import javax.inject.Singleton
 
@@ -35,6 +37,9 @@ abstract class RatesModule {
 
     @Binds
     abstract fun bindLocalStorage(localStorage: LocalStorageBoundaryImpl): LocalStorageBoundary
+
+    @Binds
+    abstract fun bindUiMapper(mapperImpl: RatesUiMapperImpl): RatesUiMapper
 
     @Module
     companion object {
