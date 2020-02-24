@@ -6,18 +6,22 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ru.supnacho.revolutcurrencyrates.R
 import ru.supnacho.revolutcurrencyrates.data.api.ApiBoundary
+import ru.supnacho.revolutcurrencyrates.data.api.LocalStorageBoundary
 import ru.supnacho.revolutcurrencyrates.domain.CurrencyCode
+import ru.supnacho.revolutcurrencyrates.domain.CurrencyError
 import ru.supnacho.revolutcurrencyrates.domain.CurrencyNames
 import ru.supnacho.revolutcurrencyrates.domain.Event
 import ru.supnacho.revolutcurrencyrates.screen.rates.adapter.RatesItemViewState
 import ru.supnacho.revolutcurrencyrates.utils.safeLog
 import ru.supnacho.revolutcurrencyrates.utils.subscribeAndTrack
+import java.io.IOException
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class RatesViewModel @Inject constructor(
-    private val api: ApiBoundary
+    private val api: ApiBoundary,
+    private val localStorage: LocalStorageBoundary
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -25,25 +29,25 @@ class RatesViewModel @Inject constructor(
     private val eventState = LiveEvent<Event>()
     val liveState: LiveData<RatesViewState>
         get() = _liveState
-    val event : LiveData<Event> = eventState
+    val event: LiveData<Event> = eventState
 
-    fun init(){
+    fun init() {
         val initRatesViewState = RatesViewState(
             baseCurrency = CurrencyCode("USD"),
             baseAmount = "1.00",
             rates = emptyList()
         )
-        _liveState.value = initRatesViewState
+        _liveState.value = localStorage.restoreLastState() ?: initRatesViewState
     }
 
-    fun setBaseAmount(baseCurrency: CurrencyCode, amount: String){
+    fun setBaseAmount(baseCurrency: CurrencyCode, amount: String) {
         _liveState.value = _liveState.value?.copy(
             baseCurrency = baseCurrency,
             baseAmount = amount
         )
     }
 
-    fun setBaseCurrency(baseCurrency: CurrencyCode){
+    fun setBaseCurrency(baseCurrency: CurrencyCode) {
         compositeDisposable.clear()
         _liveState.value = _liveState.value?.copy(
             baseCurrency = baseCurrency
@@ -52,7 +56,7 @@ class RatesViewModel @Inject constructor(
         eventState.value = Event.BaseCurrencySelected
     }
 
-    private fun getRatesWithBase() {
+    fun getRatesWithBase() {
         compositeDisposable.clear()
         api.getRatesWithBase(_liveState.value?.baseCurrency?.code)
             .toObservable()
@@ -70,13 +74,15 @@ class RatesViewModel @Inject constructor(
                         )
                     }
                 )
-                (preparedViewState?.rates as? MutableList)?.add(0, RatesItemViewState(
-                    currencyCode = it.baseCurrency,
-                    nameResId = CurrencyNames.names[it.baseCurrency] ?: R.string.unknown,
-                    rateToBase = BigDecimal.ONE,
-                    isBaseCurrency = true,
-                    baseAmount = previousState.baseAmount.toBigDecimal()
-                ))
+                (preparedViewState?.rates as? MutableList)?.add(
+                    0, RatesItemViewState(
+                        currencyCode = it.baseCurrency,
+                        nameResId = CurrencyNames.names[it.baseCurrency] ?: R.string.unknown,
+                        rateToBase = BigDecimal.ONE,
+                        isBaseCurrency = true,
+                        baseAmount = previousState.baseAmount.toBigDecimal()
+                    )
+                )
                 preparedViewState
             }
             .subscribeOn(Schedulers.io())
@@ -90,7 +96,9 @@ class RatesViewModel @Inject constructor(
                 onError = {
                     val errorMessage = it.message ?: ""
                     safeLog("RATES", errorMessage)
-                    eventState.postValue(Event.Error(errorMessage))
+                    val errorType =
+                        if (it is IOException) CurrencyError.HTTP_ERRORS else CurrencyError.UNKNOWN
+                    eventState.postValue(Event.Error(errorType))
                 }
             )
 
@@ -102,6 +110,7 @@ class RatesViewModel @Inject constructor(
 
     fun onPause() {
         compositeDisposable.clear()
+        liveState.value?.let { localStorage.saveLastState(it) }
     }
 
     override fun onCleared() {

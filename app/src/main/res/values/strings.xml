@@ -2,6 +2,9 @@
     <string name="app_name">RevolutCurrencyRates</string>
 
     <string name="rates">Rates</string>
+    <string name="retry">Retry</string>
+    <string name="close">Close</string>
+    <string name="offline">Some trouble with connection, enabled Offline mode.</string>
 
     <string name="AED">United Arab Emirates Dirham</string>
     <string name="AFN">Afghan Afghani</string>

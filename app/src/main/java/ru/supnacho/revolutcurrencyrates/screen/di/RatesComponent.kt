@@ -1,13 +1,12 @@
 package ru.supnacho.revolutcurrencyrates.screen.di
 
+import com.google.gson.Gson
 import dagger.Binds
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import ru.supnacho.revolutcurrencyrates.data.api.ApiBoundary
-import ru.supnacho.revolutcurrencyrates.data.api.ApiBoundaryImpl
-import ru.supnacho.revolutcurrencyrates.data.api.RevolutRatesApi
+import ru.supnacho.revolutcurrencyrates.data.api.*
 import ru.supnacho.revolutcurrencyrates.di.RatesDependencies
 import ru.supnacho.revolutcurrencyrates.domain.RatesDtoMapper
 import ru.supnacho.revolutcurrencyrates.domain.RatesDtoMapperImpl
@@ -34,6 +33,9 @@ abstract class RatesModule {
     @Binds
     abstract fun bindRatesMapper(mapper: RatesDtoMapperImpl): RatesDtoMapper
 
+    @Binds
+    abstract fun bindLocalStorage(localStorage: LocalStorageBoundaryImpl): LocalStorageBoundary
+
     @Module
     companion object {
         @Provides
@@ -41,5 +43,9 @@ abstract class RatesModule {
         fun provideRatesApi(retrofit: Retrofit): RevolutRatesApi {
             return retrofit.create(RevolutRatesApi::class.java)
         }
+
+        @Provides
+        @JvmStatic
+        fun provideGson(): Gson = Gson()
     }
 }

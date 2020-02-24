@@ -15,6 +15,7 @@
             style="@style/Font.Medium.XLargeSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:titleMarginStart="@dimen/dimen_9"
             app:title="@string/rates"/>
     </com.google.android.material.appbar.AppBarLayout>
 

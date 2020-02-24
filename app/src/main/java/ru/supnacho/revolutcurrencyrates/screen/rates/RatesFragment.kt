@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_rates.*
 
 import ru.supnacho.revolutcurrencyrates.R
+import ru.supnacho.revolutcurrencyrates.domain.CurrencyError
 import ru.supnacho.revolutcurrencyrates.domain.Event
 import ru.supnacho.revolutcurrencyrates.screen.rates.adapter.RatesRVAdapter
 import ru.supnacho.revolutcurrencyrates.screen.rates.viewmodel.RatesViewModel
@@ -44,23 +45,36 @@ class RatesFragment : Fragment() {
 
         viewModel.event.observe(this, Observer {
             when (it) {
-                is Event.Error ->
-                    Snackbar
-                        .make(rv_ratesList, it.message, Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Close", { }).show()
+                is Event.Error -> showError(it.errorType)
                 is Event.BaseCurrencySelected ->
-                    (rv_ratesList?.layoutManager as? LinearLayoutManager)
-                        ?.scrollToPositionWithOffset(0, 0)
+                    rv_ratesList.smoothScrollToPosition(0)
             }
         })
         viewModel.init()
+    }
+
+    private fun showError(error: CurrencyError) {
+        when (error) {
+            CurrencyError.HTTP_ERRORS -> showSnackBar(error) { viewModel.getRatesWithBase() }
+            CurrencyError.UNKNOWN -> showSnackBar(error)
+        }
+
+    }
+
+    private fun showSnackBar(error: CurrencyError, action: (() -> Unit)? = null) {
+        Snackbar
+            .make(rv_ratesList, error.message, Snackbar.LENGTH_INDEFINITE)
+            .setAction(error.actionId) { action?.invoke() }.show()
     }
 
     private fun initRecycler() {
         ratesAdapter = RatesRVAdapter(viewModel)
         val layoutManager =
             LinearLayoutManager(context)
-                .apply { orientation = RecyclerView.VERTICAL }
+                .apply {
+                    orientation = RecyclerView.VERTICAL
+                    isSmoothScrollbarEnabled = true
+                }
 
         rv_ratesList.run {
             setHasFixedSize(true)
@@ -68,7 +82,6 @@ class RatesFragment : Fragment() {
             adapter = ratesAdapter
         }
     }
-
 
     override fun onResume() {
         super.onResume()

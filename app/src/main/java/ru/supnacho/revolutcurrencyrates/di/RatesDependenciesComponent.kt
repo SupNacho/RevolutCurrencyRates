@@ -10,6 +10,8 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.supnacho.revolutcurrencyrates.BuildConfig
+import ru.supnacho.revolutcurrencyrates.data.api.LocalStorageBoundary
+import ru.supnacho.revolutcurrencyrates.data.api.LocalStorageBoundaryImpl
 import ru.supnacho.revolutcurrencyrates.data.api.RevolutRatesApi
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
