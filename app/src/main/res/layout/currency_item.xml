@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?android:attr/selectableItemBackground">
     <ImageView
         android:id="@+id/iv_currencyIcon"
         android:layout_width="40dp"
@@ -34,14 +37,16 @@
             android:layout_height="wrap_content"
             tools:text="US Dollar"/>
     </LinearLayout>
-    <EditText
+    <ru.supnacho.revolutcurrencyrates.customview.AmountEditText
         android:id="@+id/et_currencyAmount"
         style="@style/Font.Medium.XLargeSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="@dimen/amount_max_width"
         android:layout_marginStart="@dimen/dimen_2"
         android:layout_marginEnd="@dimen/dimen_2"
         android:layout_gravity="center"
+        android:lines="1"
         android:importantForAutofill="no"
         android:labelFor="@id/et_currencyAmount"
         android:inputType="numberDecimal"

@@ -11,7 +11,7 @@ interface RatesDtoMapper {
 class RatesDtoMapperImpl @Inject constructor(): RatesDtoMapper {
     override fun mapDto(dto: RatesResponseDto): RatesModel =
         RatesModel(
-            baseCurrency = CurrencyCode(dto.baseCurrency?:""),
+            baseCurrency = CurrencyCode(dto.baseCurrency),
             rates = mapMap(dto.rates)
         )
 

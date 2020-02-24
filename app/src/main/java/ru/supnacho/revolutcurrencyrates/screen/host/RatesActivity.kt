@@ -12,10 +12,11 @@ class RatesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rates)
 
-        supportFragmentManager.beginTransaction().replace(
-            R.id.ratesHostContainer,
-            RatesFragment.newInstance(),
-            RatesFragment::class.java.name
-        ).commit()
+        if (savedInstanceState == null)
+            supportFragmentManager.beginTransaction().replace(
+                R.id.ratesHostContainer,
+                RatesFragment.newInstance(),
+                RatesFragment::class.java.name
+            ).commit()
     }
 }

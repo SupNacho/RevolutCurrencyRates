@@ -27,6 +27,7 @@ buildscript {
     ext.glide_version = '4.9.0'
     ext.gson_version = '2.8.6'
     ext.rxkotlin_version = '2.4.0'
+    ext.life_event_version = '1.2.0'
 
     ext.googleDependencies = [
             kotlin              : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}",
@@ -65,6 +66,7 @@ buildscript {
             glide            : "com.github.bumptech.glide:glide:${glide_version}",
             glide_compiler   : "com.github.bumptech.glide:compiler:${glide_version}",
             gson             : "com.google.code.gson:gson:${gson_version}",
+            life_event       : "com.github.hadilq.liveevent:liveevent:$life_event_version"
     ]
 
     repositories {

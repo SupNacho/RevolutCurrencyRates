@@ -45,6 +45,7 @@ dependencies {
     implementation thirdPartyDependencies.rxjava
     implementation thirdPartyDependencies.rxandroid
     implementation thirdPartyDependencies.rxKotlin
+    implementation thirdPartyDependencies.life_event
 
     implementation thirdPartyDependencies.retrofit
     implementation thirdPartyDependencies.retrofit_rx
