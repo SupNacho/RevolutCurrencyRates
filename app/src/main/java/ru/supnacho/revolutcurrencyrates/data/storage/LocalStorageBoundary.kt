@@ -1,4 +1,4 @@
-package ru.supnacho.revolutcurrencyrates.data.api
+package ru.supnacho.revolutcurrencyrates.data.storage
 
 import android.content.Context
 import com.google.gson.Gson
@@ -10,7 +10,8 @@ interface LocalStorageBoundary {
     fun restoreLastState(): RatesViewState?
 }
 
-class LocalStorageBoundaryImpl @Inject constructor(context: Context, val gson: Gson): LocalStorageBoundary {
+class LocalStorageBoundaryImpl @Inject constructor(context: Context, val gson: Gson):
+    LocalStorageBoundary {
     private val sharedPreferences = context.getSharedPreferences("ViewStateSP", Context.MODE_PRIVATE)
 
     override fun saveLastState(viewState: RatesViewState) {

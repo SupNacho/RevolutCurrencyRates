@@ -49,3 +49,7 @@ fun View.hideSoftKeyboard() {
 }
 
 fun BigDecimal.toView(): String = this.setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+
+fun View.setVisibility(isVisible: Boolean) {
+    this.visibility = if (isVisible) View.VISIBLE else View.GONE
+}

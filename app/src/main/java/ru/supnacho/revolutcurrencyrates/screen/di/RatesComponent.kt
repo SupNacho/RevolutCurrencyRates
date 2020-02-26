@@ -7,6 +7,8 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import ru.supnacho.revolutcurrencyrates.data.api.*
+import ru.supnacho.revolutcurrencyrates.data.storage.LocalStorageBoundary
+import ru.supnacho.revolutcurrencyrates.data.storage.LocalStorageBoundaryImpl
 import ru.supnacho.revolutcurrencyrates.di.RatesDependencies
 import ru.supnacho.revolutcurrencyrates.domain.RatesDtoMapper
 import ru.supnacho.revolutcurrencyrates.domain.RatesDtoMapperImpl
