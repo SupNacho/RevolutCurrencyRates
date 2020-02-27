@@ -2,10 +2,77 @@
 
 buildscript {
     ext.kotlin_version = '1.3.61'
+    ext.android_ktx_version = '1.0.1'
+    ext.support_library_version = '1.0.0'
+    ext.recyclerview = '1.1.0'
+    ext.constraint_layout_version = '1.1.3'
+    ext.design_library_version = "1.1.0-beta02"
+    ext.lifecycle_extensions = "2.0.0"
+
+    //test
+    ext.junit_version = '4.12'
+    ext.runner_and_rules_version = '1.1.0'
+    ext.robolectric_version = '3.8'
+    ext.mockito_version = '2.25.1'
+    ext.mockito_kotlin_version = '1.6.0'
+    ext.espresso_version = '3.1.0'
+
+    //third-party
+    ext.dagger_version = '2.25.2'
+    ext.rxjava_version = '2.2.4'
+    ext.rxandroid_version = '2.1.1'
+    ext.retrofit_version = '2.6.2'
+    ext.okhttp_version = '3.12.1'
+    ext.leakcanary_version = '1.6.2'
+    ext.glide_version = '4.9.0'
+    ext.gson_version = '2.8.6'
+    ext.rxkotlin_version = '2.4.0'
+    ext.life_event_version = '1.2.0'
+
+    ext.googleDependencies = [
+            kotlin              : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}",
+            android_ktx_core    : "androidx.core:core-ktx:${android_ktx_version}",
+            recyclerview        : "androidx.recyclerview:recyclerview:${recyclerview}",
+            appcompat           : "androidx.appcompat:appcompat:${support_library_version}",
+            design              : "com.google.android.material:material:${design_library_version}",
+            constraint_layout   : "androidx.constraintlayout:constraintlayout:${constraint_layout_version}",
+            lifecycle_extensions: "androidx.lifecycle:lifecycle-extensions:${lifecycle_extensions}",
+    ]
+
+    ext.testDependencies = [
+            junit           : "junit:junit:${junit_version}",
+            runner          : "androidx.test:runner:${runner_and_rules_version}",
+            rules           : "androidx.test:rules:${runner_and_rules_version}",
+            robolectric     : "org.robolectric:robolectric:${robolectric_version}",
+            mockito_core    : "org.mockito:mockito-core:${mockito_version}",
+            mockito_android : "org.mockito:mockito-android:${mockito_version}",
+            mockito_kotlin  : "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockito_kotlin_version}",
+            espresso_core   : "androidx.test.espresso:espresso-core:${espresso_version}",
+            espresso_contrib: "androidx.test.espresso:espresso-contrib:${espresso_version}",
+            espresso_web    : "androidx.test.espresso:espresso-web:${espresso_version}",
+    ]
+
+    ext.thirdPartyDependencies = [
+            dagger           : "com.google.dagger:dagger:${dagger_version}",
+            daggerCompiler   : "com.google.dagger:dagger-compiler:${dagger_version}",
+            retrofit         : "com.squareup.retrofit2:retrofit:${retrofit_version}",
+            retrofit_rx      : "com.squareup.retrofit2:adapter-rxjava2:${retrofit_version}",
+            retrofit_gson    : "com.squareup.retrofit2:converter-gson:${retrofit_version}",
+            rxandroid        : "io.reactivex.rxjava2:rxandroid:${rxandroid_version}",
+            rxjava           : "io.reactivex.rxjava2:rxjava:${rxjava_version}",
+            rxKotlin         : "io.reactivex.rxjava2:rxkotlin:${rxkotlin_version}",
+            okhttp           : "com.squareup.okhttp3:okhttp:${okhttp_version}",
+            okhttp_log_interc: "com.squareup.okhttp3:logging-interceptor:${okhttp_version}",
+            glide            : "com.github.bumptech.glide:glide:${glide_version}",
+            glide_compiler   : "com.github.bumptech.glide:compiler:${glide_version}",
+            gson             : "com.google.code.gson:gson:${gson_version}",
+            life_event       : "com.github.hadilq.liveevent:liveevent:$life_event_version"
+    ]
+
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
@@ -19,7 +86,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 

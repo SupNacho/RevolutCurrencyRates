@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?android:attr/selectableItemBackground">
+    <ImageView
+        android:id="@+id/iv_currencyIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="@dimen/dimen_2"
+        android:layout_gravity="center"
+        tools:background="@color/colorPrimaryDark"
+        tools:ignore="ContentDescription" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimen_2"
+        android:layout_marginBottom="@dimen/dimen_2"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_currencyCode"
+            style="@style/Font.Medium.LargeSize.Black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="USD"/>
+        <TextView
+            android:id="@+id/tv_currencyName"
+            style="@style/Font.Normal.NormalSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="US Dollar"/>
+    </LinearLayout>
+    <ru.supnacho.revolutcurrencyrates.customview.AmountEditText
+        android:id="@+id/et_currencyAmount"
+        style="@style/Font.Medium.XLargeSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="@dimen/amount_max_width"
+        android:layout_marginStart="@dimen/dimen_2"
+        android:layout_marginEnd="@dimen/dimen_2"
+        android:layout_gravity="center"
+        android:lines="1"
+        android:importantForAutofill="no"
+        android:labelFor="@id/et_currencyAmount"
+        android:inputType="numberDecimal"
+        tools:text="1183.06" />
+</LinearLayout>
