@@ -70,7 +70,6 @@ class RatesViewHolder(view: View, val actionListener: HolderActions) :
         itemView.et_currencyAmount?.run {
             if (isFocused) {
                 hideSoftKeyboard()
-                actionListener.onFocusLost()
             }
         }
     }
@@ -78,6 +77,5 @@ class RatesViewHolder(view: View, val actionListener: HolderActions) :
     interface HolderActions {
         fun inputAmount(baseCurrency: CurrencyCode, amount: String)
         fun selectBaseCurrency(baseCurrency: CurrencyCode)
-        fun onFocusLost()
     }
 }

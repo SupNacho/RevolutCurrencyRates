@@ -43,10 +43,6 @@ class RatesRVAdapter(private val viewModel: RatesViewModel): RecyclerView.Adapte
         viewModel.setBaseCurrency(baseCurrency)
     }
 
-    override fun onFocusLost() {
-        safeLog("LOSTFOCUS", "OnLostFocus")
-    }
-
     private class DiffCallback(
         private val oldItems: List<RatesItemViewState>,
         private val newItems: List<RatesItemViewState>
