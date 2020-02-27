@@ -10,17 +10,22 @@ interface LocalStorageBoundary {
     fun restoreLastState(): RatesViewState?
 }
 
-class LocalStorageBoundaryImpl @Inject constructor(context: Context, val gson: Gson):
+class LocalStorageBoundaryImpl @Inject constructor(context: Context, private val gson: Gson):
     LocalStorageBoundary {
-    private val sharedPreferences = context.getSharedPreferences("ViewStateSP", Context.MODE_PRIVATE)
+    private val sharedPreferences = context.getSharedPreferences(SP_FILE_NAME, Context.MODE_PRIVATE)
 
     override fun saveLastState(viewState: RatesViewState) {
-        sharedPreferences.edit().putString("VS", gson.toJson(viewState, RatesViewState::class.java))
+        sharedPreferences.edit().putString(SP_VS, gson.toJson(viewState, RatesViewState::class.java))
             .apply()
     }
 
     override fun restoreLastState(): RatesViewState? {
-        val json = sharedPreferences.getString("VS", null)
+        val json = sharedPreferences.getString(SP_VS, null)
         return json?.let { gson.fromJson(it, RatesViewState::class.java) }
+    }
+
+    private companion object {
+        const val SP_FILE_NAME = "ViewStateSP"
+        const val SP_VS = "VS"
     }
 }

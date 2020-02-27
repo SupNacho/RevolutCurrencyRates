@@ -15,7 +15,7 @@ data class RatesItemViewState (
     val isBaseCurrency: Boolean = false
 ): Parcelable {
     @IgnoredOnParcel
-    val amount: BigDecimal = baseAmount.multiply(rateToBase)
+    val amount: BigDecimal = if (isBaseCurrency) baseAmount else baseAmount.multiply(rateToBase)
     @IgnoredOnParcel
     val imageUrl: String = "https://raw.githubusercontent.com/supnacho/revolutcurrencyrates/master/currency-flags/${currencyCode.code}.png"
 }

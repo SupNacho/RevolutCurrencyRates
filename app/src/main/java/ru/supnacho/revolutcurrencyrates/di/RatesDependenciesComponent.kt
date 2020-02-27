@@ -33,18 +33,18 @@ internal abstract class RatesDependenciesModule {
         @JvmStatic
         @Provides
         @Singleton
-        fun provideRetrofit(context: Context): Retrofit {
+        fun provideRetrofit(): Retrofit {
             return Retrofit.Builder()
                 .baseUrl(RevolutRatesApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(getGson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(getOkHttpClient(context))
+                .client(getOkHttpClient())
                 .build()
         }
 
         private fun getGson(): Gson = Gson()
 
-        private fun getOkHttpClient(context: Context): OkHttpClient {
+        private fun getOkHttpClient(): OkHttpClient {
             val logInterceptor = HttpLoggingInterceptor().apply {
                 level =
                     if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
